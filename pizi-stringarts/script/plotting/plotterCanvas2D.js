@@ -10,53 +10,79 @@ export class PlotterCanvas2D extends PlotterBase {
         this.cssPixel = window.devicePixelRatio || 1;
     }
 
-    resize = function () {
-        var e = Math.floor(this.cssPixel * this.canvas.clientWidth),
-            t = Math.floor(this.cssPixel * this.canvas.clientHeight);
-        (this.canvas.width === e && this.canvas.height === t) || ((this.canvas.width = e), (this.canvas.height = t));
+    resize = function() {
+        var newWidth = Math.floor(this.cssPixel * this.canvas.clientWidth);
+        var newHeight = Math.floor(this.cssPixel * this.canvas.clientHeight);
+    
+        if (this.canvas.width !== newWidth || this.canvas.height !== newHeight) {
+            this.canvas.width = newWidth;
+            this.canvas.height = newHeight;
+        }
     }
 
-    initialize = function (e) {
-        (this.context.fillStyle = e.backgroundColor), (this.context.lineJoin = "round"), (0, ResetCanvasCompositing.resetCanvasCompositing)(this.context), this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    initialize = function(settings) {
+        this.context.fillStyle = settings.backgroundColor;
+        this.context.lineJoin = "round";
+        ResetCanvasCompositing.resetCanvasCompositing(this.context);
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     finalize = function () {}
 
-    set blur(e) {
-        0 === e
-            ? (this.canvas.style.filter = "")
-            : ((this.canvas.style.filter = "blur(".concat(e, "px)")),
-                (this.canvas.style.filter = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='1' height='1'%3E%3CfeGaussianBlur stdDeviation='"
-                    .concat(e, "' result='b'/%3E%3CfeMorphology operator='dilate' radius='")
-                    .concat(e, "'/%3E %3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode in='b'/%3E%3C/feMerge%3E%3C/filter%3E%3C/svg%3E#a\")")));
-    }
-
-    drawLines = function (e, t, n, r, a) {
-        if (e.length >= 1) {
-            (0, ResetCanvasCompositing.applyCanvasCompositing)(this.context, t, n, r), (this.context.lineWidth = a * this.cssPixel);
-            for (var i = 0, s = e; i < s.length; i++) {
-                var h = s[i];
-                this.context.beginPath(),
-                    this.context.moveTo(h.from.x * this.cssPixel, h.from.y * this.cssPixel),
-                    this.context.lineTo(h.to.x * this.cssPixel, h.to.y * this.cssPixel),
-                    this.context.stroke(),
-                    this.context.closePath();
-            }
-            (0, ResetCanvasCompositing.resetCanvasCompositing)(this.context);
+    set blur(value) {
+        if (value === 0) {
+            this.canvas.style.filter = "";
+        } else {
+            this.canvas.style.filter = `blur(${value}px)`;
+            this.canvas.style.filter = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='1' height='1'%3E%3CfeGaussianBlur stdDeviation='${value}' result='b'/%3E%3CfeMorphology operator='dilate' radius='${value}'/%3E %3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode in='b'/%3E%3C/feMerge%3E%3C/filter%3E%3C/svg%3E#a")`;
         }
     }
 
-    drawPoints = function (e, t, n) {
-        if (e.length > 0) {
-            (this.context.fillStyle = t), (this.context.strokeStyle = "none");
-            for (var r = 0, a = e; r < a.length; r++) {
-                var o = a[r];
-                this.context.beginPath(), this.context.arc(o.x * this.cssPixel, o.y * this.cssPixel, 0.5 * n * this.cssPixel, 0, 2 * Math.PI), this.context.fill(), this.context.closePath();
+    drawLines = function(points, compositing, globalAlpha, operation, lineWidth) {
+        if (points.length >= 1) {
+            ResetCanvasCompositing.applyCanvasCompositing(this.context, compositing, globalAlpha, operation);
+            this.context.lineWidth = lineWidth * this.cssPixel;
+    
+            for (var i = 0; i < points.length; i++) {
+                var point = points[i];
+    
+                this.context.beginPath();
+                this.context.moveTo(point.from.x * this.cssPixel, point.from.y * this.cssPixel);
+                this.context.lineTo(point.to.x * this.cssPixel, point.to.y * this.cssPixel);
+                this.context.stroke();
+                this.context.closePath();
+            }
+    
+            ResetCanvasCompositing.resetCanvasCompositing(this.context);
+        }
+    }
+
+    drawPoints = function(points, fillColor, scale) {
+        if (points.length > 0) {
+            this.context.fillStyle = fillColor;
+            this.context.strokeStyle = "none";
+    
+            for (var i = 0; i < points.length; i++) {
+                var point = points[i];
+    
+                this.context.beginPath();
+                this.context.arc(
+                    point.x * this.cssPixel, 
+                    point.y * this.cssPixel, 
+                    0.5 * scale * this.cssPixel, 
+                    0, 
+                    2 * Math.PI
+                );
+                this.context.fill();
+                this.context.closePath();
             }
         }
     }
 
     get size() {
-        return { width: Math.floor(this.canvas.width / this.cssPixel), height: Math.floor(this.canvas.height / this.cssPixel) };
+        return {
+            width: Math.floor(this.canvas.width / this.cssPixel),
+            height: Math.floor(this.canvas.height / this.cssPixel)
+        };
     }
 }
