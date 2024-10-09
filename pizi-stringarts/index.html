@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Transformation of a picture into string art." />
+    <title>Pizi Stringarts</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/jpg" href="images/pizi_logo.jpg">
+    <link rel="stylesheet" type="text/css" href="css/page.css">
+  </head>
+
+  <body>
+    <header>
+      <a href="https://www.pizistringarts.com/" id="back-to-home-button" title="Home" aria-label="Home">
+        <img class="logo logo-animate-fill" src="images/pizi_logo.jpg">
+      </a>
+    </header>
+    <main>
+      <div id="error-messages">
+        <noscript>
+          You need to enable Javascript to run this experiment.
+        </noscript>
+      </div>
+
+      <input type="checkbox" id="fullscreen-checkbox-id" class="hidden">
+      <div class="demo">
+        <input type="checkbox" id="side-pane-checkbox-id" class="hidden">
+        <div id="canvas-container">
+          <canvas id="canvas"></canvas>
+          <div class="loader">
+            <span></span>
+            <div class="loader-animation"></div>
+          </div>
+          <div id="indicators">
+            <div id="pegs-count-indicator-id">
+              Pegs count: <span></span>
+            </div>
+            <div id="segments-count-indicator-id">
+              Segments count: <span></span>
+            </div>
+            <div id="error-average-indicator-id">
+              Error (average): <span></span>
+            </div>
+            <div id="error-mean-square-indicator-id">
+              Error (mean square): <span></span>
+            </div>
+            <div id="error-variance-indicator-id">
+              Error (variance): <span></span>
+            </div>
+          </div>
+          <div id="canvas-buttons-column">
+            <label class="canvas-button" id="fullscreen-toggle-id" for="fullscreen-checkbox-id"></label>
+            <label class="canvas-button" id="side-pane-toggle-id" for="side-pane-checkbox-id"></label>
+          </div>
+        </div>
+        <div class="controls-block">
+          <label class="canvas-button" id="side-pane-close-toggle-id" for="side-pane-checkbox-id">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <line x1="22" y1="22" x2="10" y2="10" stroke-linecap="round" stroke-width="2" />
+              <line x1="22" y1="10" x2="10" y2="22" stroke-linecap="round" stroke-width="2" />
+            </svg>
+          </label>
+          <section class="controls-section">
+            <h2>Input</h2>
+
+            <div class="controls-list">
+              <div class="control" id="control-input-image-upload-button">
+                <div class="file-control upload ">
+                  <input type="file" name="file" id="input-image-upload-button" class="file-input" accept=".png,.jpg,.jpeg,.bmp,.webp" />
+                  <label class="file-control-button" for="input-image-upload-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                      <path d="M12 22L12 13 7 13 16 2 25 13 20 13 20 22ZM6 25L26 25 26 29 6 29Z" />
+                    </svg>
+                    <span data-placeholder="Upload an image">Upload an image</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+          <hr />
+          <section class="controls-section">
+            <h2>Pegs</h2>
+
+            <div class="controls-list">
+              <div class="control" id="control-shape-tabs-id">
+                <label>Shape:</label>
+                <div class="tabs compact" id="shape-tabs-id-id">
+                  <input type="radio" name="shape-tabs-id" value="0" id="shape-tabs-id-0-id" checked />
+                  <label for="shape-tabs-id-0-id">Rectangle</label>
+                  <input type="radio" name="shape-tabs-id" value="1" id="shape-tabs-id-1-id" />
+                  <label for="shape-tabs-id-1-id">Ellipsis</label>
+                </div>
+              </div>
+              <div class="control" id="control-pegs-range-id">
+                <label>Pegs count:</label>
+                <div class="range-container">
+                  <input type="range" min="150" max="1200" value="350" step="10" class="slider" id="pegs-range-id">
+                  <div class="range-skin-container">
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-left range-stub-left"></span>
+                    </div>
+                    <div class="range-progress">
+                      <div class="range-progress-left">
+                        <span class="range-bar range-bar-left"></span>
+                        <span class="range-handle"></span>
+                        <output for="pegs-range-id" class="range-tooltip"></output>
+                      </div>
+                      <div class="range-progress-right">
+                        <span class="range-bar range-bar-right"></span>
+                      </div>
+                    </div>
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-right range-stub-right"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <hr />
+          <section class="controls-section">
+            <h2>Parameters</h2>
+
+            <div class="controls-list">
+              <div class="control" id="control-quality-tabs-id">
+                <label>Quality:</label>
+                <div class="tabs compact" id="quality-tabs-id-id">
+                  <input type="radio" name="quality-tabs-id" value="1" id="quality-tabs-id-1-id" />
+                  <label for="quality-tabs-id-1-id">Low</label>
+                  <input type="radio" name="quality-tabs-id" value="2" id="quality-tabs-id-2-id" />
+                  <label for="quality-tabs-id-2-id">Medium</label>
+                  <input type="radio" name="quality-tabs-id" value="3" id="quality-tabs-id-3-id" checked />
+                  <label for="quality-tabs-id-3-id">High</label>
+                </div>
+              </div>
+              <div class="control" id="control-thread-mode-tabs-id">
+                <label>Mode:</label>
+                <div class="tabs compact" id="thread-mode-tabs-id-id">
+                  <input type="radio" name="thread-mode-tabs-id" value="0" id="thread-mode-tabs-id-0-id" />
+                  <label for="thread-mode-tabs-id-0-id">Monochrome</label>
+                  <input type="radio" name="thread-mode-tabs-id" value="1" id="thread-mode-tabs-id-1-id" checked />
+                  <label for="thread-mode-tabs-id-1-id">Three colors</label>
+                </div>
+              </div>
+              <div class="control" id="control-invert-colors-checkbox-id">
+                <label>Dark mode:</label>
+                <div class="checkbox">
+                  <input type="checkbox" id="invert-colors-checkbox-id">
+                  <label for="invert-colors-checkbox-id" class="checkmark"></label>
+                </div>
+              </div>
+              <div class="control" id="control-lines-range-id">
+                <label>Segments count:</label>
+                <div class="range-container">
+                  <input type="range" min="500" max="20000" value="10000" step="500" class="slider" id="lines-range-id">
+                  <div class="range-skin-container">
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-left range-stub-left"></span>
+                    </div>
+                    <div class="range-progress">
+                      <div class="range-progress-left">
+                        <span class="range-bar range-bar-left"></span>
+                        <span class="range-handle"></span>
+                        <output for="lines-range-id" class="range-tooltip"></output>
+                      </div>
+                      <div class="range-progress-right">
+                        <span class="range-bar range-bar-right"></span>
+                      </div>
+                    </div>
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-right range-stub-right"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="control" id="control-opacity-range-id">
+                <label>Opacity:</label>
+                <div class="range-container">
+                  <input type="range" min="1" max="5" value="2" step="1" class="slider" id="opacity-range-id">
+                  <div class="range-skin-container">
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-left range-stub-left"></span>
+                    </div>
+                    <div class="range-progress">
+                      <div class="range-progress-left">
+                        <span class="range-bar range-bar-left"></span>
+                        <span class="range-handle"></span>
+                        <output for="opacity-range-id" class="range-tooltip"></output>
+                      </div>
+                      <div class="range-progress-right">
+                        <span class="range-bar range-bar-right"></span>
+                      </div>
+                    </div>
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-right range-stub-right"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="control" id="control-thickness-range-id">
+                <label>Thickness:</label>
+                <div class="range-container">
+                  <input type="range" min="0.25" max="1" value="0.5" step="0.25" class="slider" id="thickness-range-id">
+                  <div class="range-skin-container">
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-left range-stub-left"></span>
+                    </div>
+                    <div class="range-progress">
+                      <div class="range-progress-left">
+                        <span class="range-bar range-bar-left"></span>
+                        <span class="range-handle"></span>
+                        <output for="thickness-range-id" class="range-tooltip"></output>
+                      </div>
+                      <div class="range-progress-right">
+                        <span class="range-bar range-bar-right"></span>
+                      </div>
+                    </div>
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-right range-stub-right"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <hr />
+          <section class="controls-section">
+            <h2>Display</h2>
+
+            <div class="controls-list">
+              <div class="control" id="control-display-pegs-checkbox-id">
+                <label>Pegs:</label>
+                <div class="checkbox">
+                  <input type="checkbox" id="display-pegs-checkbox-id" checked>
+                  <label for="display-pegs-checkbox-id" class="checkmark"></label>
+                </div>
+              </div>
+              <div class="control" id="control-show-indicators-checkbox-id">
+                <label>Show indicators:</label>
+                <div class="checkbox">
+                  <input type="checkbox" id="show-indicators-checkbox-id" checked>
+                  <label for="show-indicators-checkbox-id" class="checkmark"></label>
+                </div>
+              </div>
+              <div class="control" id="control-blur-range-id">
+                <label>Blur:</label>
+                <div class="range-container">
+                  <input type="range" min="0" max="20" value="0" step="1" class="slider" id="blur-range-id">
+                  <div class="range-skin-container">
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-left range-stub-left"></span>
+                    </div>
+                    <div class="range-progress">
+                      <div class="range-progress-left">
+                        <span class="range-bar range-bar-left"></span>
+                        <span class="range-handle"></span>
+                        <output for="blur-range-id" class="range-tooltip"></output>
+                      </div>
+                      <div class="range-progress-right">
+                        <span class="range-bar range-bar-right"></span>
+                      </div>
+                    </div>
+                    <div class="range-stub">
+                      <span class="range-bar range-bar-right range-stub-right"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <hr />
+          <section class="controls-section">
+            <h2>Output</h2>
+
+            <div class="controls-list">
+              <div class="control" id="control-result-download-id">
+                <div class="file-control download ">
+                  <input type="button" id="result-download-id" class="file-input" />
+                  <label class="file-control-button" for="result-download-id">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                      <path d="M12 4L12 13 7 13 16 24 25 13 20 13 20 4ZM6 25L26 25 26 29 6 29Z" />
+                    </svg>
+                    <span>Download as SVG</span>
+                  </label>
+                </div>
+              </div>
+              <div class="control" id="control-instructions-download-id">
+                <div class="file-control download ">
+                  <input type="button" id="instructions-download-id" class="file-input" />
+                  <label class="file-control-button" for="instructions-download-id">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                      <path d="M12 4L12 13 7 13 16 24 25 13 20 13 20 4ZM6 25L26 25 26 29 6 29Z" />
+                    </svg>
+                    <span>Download instructions (beta)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script type="text/javascript">
+      var Page = Page || {};
+      Object.defineProperty(Page, "version", {
+        value: "2024-02-22T09%3A31%3A32.088Z",
+        writable: false,
+      });
+    </script>
+    <script src="script/page.js"></script>
+    <script type="module" src="script/main.js"></script>
+  </body>
+
+</html>
