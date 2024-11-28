@@ -185,12 +185,18 @@ export class ThreadComputer {
 
         const steps = this.threads.map(({from, to, color}, index) => {
             const stepNumber = index + 1;
+            const isFirstStep = stepNumber === 1;
+
+            if(isFirstStep) {
+                return `- First start from ${from.name}\n`;
+            }
+
             const threadColor = color === 1 ? "Red"
                 : color === 2 ? "Green"
                 : color === 3 ? "Blue"
                 : "Black";
 
-            return `- Step ${stepNumber} ${threadColor} color: ${from.name} to ${to.name}`;
+            return `${index}. ${threadColor === "Black" ? "" : threadColor + " "} ${to.name}`;
         });
 
         const isMonochrome = Parameters.mode === EMode.MONOCHROME;
@@ -201,21 +207,18 @@ export class ThreadComputer {
         
         const instructionsText = [
             "Here are instructions to reproduce this in real life.",
-            "\n",
             "Space units used below are abstract, just scale it to whatever size you want. Typically, you can choose 1 unit = 1 millimeter.",
-            "\n",
             `Computed for a total size of ${maxX} x ${maxY}`,
-            "\n",
-            `First here are the positions of the ${this.pegs.length} PINS:`,
-            `${pinPositions.join("\n")}`,
-            "\n",
+            // `First here are the positions of the ${this.pegs.length} PINS:`,
+            // `${pinPositions.join("\n")}`,
             `${colorInfo.join("\n")}`,
-            "\n",
-            "Steps to sort by algorithm:",
+            `Number of Lines: ${this.threads.length}`,
+            `Number of Pins: ${this.pegs.length}`,
+            "Then here are the steps of the thread:",
             `${steps.join("\n")}`,
         ];
 
-        return instructionsText.join("\n");
+        return instructionsText.filter(text => !!text).join("\n\n");
     }
         
     initializeHiddenCanvasLineProperties() {
