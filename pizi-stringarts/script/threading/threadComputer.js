@@ -206,12 +206,12 @@ export class ThreadComputer {
         ];
         
         const instructionsText = [
-            "Here are instructions to reproduce this in real life.",
-            "Space units used below are abstract, just scale it to whatever size you want. Typically, you can choose 1 unit = 1 millimeter.",
-            `Computed for a total size of ${maxX} x ${maxY}`,
+            // "Here are instructions to reproduce this in real life.",
+            // "Space units used below are abstract, just scale it to whatever size you want. Typically, you can choose 1 unit = 1 millimeter.",
+            // `Computed for a total size of ${maxX} x ${maxY}`,
             // `First here are the positions of the ${this.pegs.length} PINS:`,
             // `${pinPositions.join("\n")}`,
-            `${colorInfo.join("\n")}`,
+            // `${colorInfo.join("\n")}`,
             `Number of Lines: ${this.threads.length}`,
             `Number of Pins: ${this.pegs.length}`,
             "Then here are the steps of the thread:",
